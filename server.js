@@ -75,8 +75,8 @@ app.use(express.json({ limit: "32kb" }));
 const attemptsByIp = new Map();
 
 function getClientIp(req) {
-  const raw = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
-  return String(raw).split(",")[0].trim();
+  const rawIp = req.ip || req.socket.remoteAddress || "unknown";
+  return String(rawIp).trim();
 }
 
 function cleanupAttempts(now) {
