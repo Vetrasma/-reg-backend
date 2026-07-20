@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { atlasBlueprint } from "./src/atlas/blueprint.js";
 
 const app = express();
 app.use(cors());
@@ -12,7 +13,7 @@ const ADMIN_USER = {
   passwordHash: bcrypt.hashSync("admin123", 10)
 };
 
-const JWT_SECRET = "REG_SECRET_KEY_123";
+const JWT_SECRET = process.env.JWT_SECRET || "REG_SECRET_KEY_123";
 
 app.post("/api/auth/login", (req, res) => {
   const { username, password } = req.body;
@@ -33,6 +34,19 @@ app.post("/api/auth/login", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("R.E.G Backend Online");
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "reg-backend",
+    system: "ATLAS",
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get("/api/atlas/blueprint", (req, res) => {
+  res.json(atlasBlueprint);
 });
 
 const port = process.env.PORT || 3000;
